@@ -10,13 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "docxtemplater": "^3.69.3",
+    "file-saver": "^2.0.5",
     "lucide-react": "^1.33.0",
+    "pizzip": "^3.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2"
+    "react-router-dom": "^7.18.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

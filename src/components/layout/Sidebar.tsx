@@ -79,7 +79,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <span className="text-xs font-semibold">Mahalliy ishlov</span>
           </div>
           <p className="text-[12px] leading-relaxed text-ink-400">
-            Excel faqat brauzerda qoladi. Word namuna dasturga o‘rnatilgan.
+            Excel brauzerda o‘qiladi. Word namuna dasturga o‘rnatilgan.
           </p>
         </div>
       </aside>
