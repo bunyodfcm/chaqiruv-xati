@@ -77,7 +77,21 @@ export function formatStartNum(n: number): string {
 
 export function buildCours(level: string, semester: string): string {
   const parts: string[] = []
-  if (level) parts.push(`${level}-kurs`)
-  if (semester) parts.push(`${semester}-semestr`)
+  const levelPart = ensureUnitSuffix(level, 'kurs')
+  const semesterPart = ensureUnitSuffix(semester, 'semestr')
+  if (levelPart) parts.push(levelPart)
+  if (semesterPart) parts.push(semesterPart)
   return parts.join(' ')
+}
+
+/** "2" | "2-kurs" | "2-kurs-kurs" → "2-kurs" */
+function ensureUnitSuffix(value: string, suffix: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+
+  const stripRe = new RegExp(`(?:[\\s-]*${suffix})+$`, 'i')
+  const base = trimmed.replace(stripRe, '').trim()
+  if (!base) return `${trimmed.match(/\d+/)?.[0] ?? trimmed}-${suffix}`
+
+  return `${base}-${suffix}`
 }
