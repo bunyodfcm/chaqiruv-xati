@@ -4,6 +4,7 @@ import { GroupList } from '@/components/prepare/GroupList'
 import { TemplateCard } from '@/components/prepare/TemplateCard'
 import { FileDropzone } from '@/components/ui/FileDropzone'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { useUnloadGuard } from '@/hooks/useUnloadGuard'
 import { parseExcelFile } from '@/lib/excel'
 import { formatFileSize } from '@/lib/files'
 import {
@@ -29,6 +30,8 @@ export function PreparePage() {
     createTemplate,
   } = usePrepare()
   const [notice, setNotice] = useState<string | null>(null)
+
+  useUnloadGuard(groups.length > 0 || templates.length > 0)
 
   async function handleFiles(files: File[]) {
     const file = files[0]
