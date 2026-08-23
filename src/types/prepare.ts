@@ -95,3 +95,29 @@ function ensureUnitSuffix(value: string, suffix: string): string {
 
   return `${base}-${suffix}`
 }
+
+/** "2026-08-24" → "24.08.2026" */
+export function isoDateToDisplay(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim())
+  if (!match) return ''
+  const [, y, m, d] = match
+  return `${d}.${m}.${y}`
+}
+
+/** "24.08.2026" → "2026-08-24" (for input[type=date]) */
+export function displayDateToIso(display: string): string {
+  const match = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(display.trim())
+  if (!match) return ''
+  const [, d, m, y] = match
+  return `${y}-${m}-${d}`
+}
+
+/** "14:00" or "14:00:00" → "14:00" */
+export function normalizeTime(value: string): string {
+  const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(value.trim())
+  if (!match) return ''
+  const hours = match[1]!.padStart(2, '0')
+  const minutes = match[2]!
+  return `${hours}:${minutes}`
+}
+

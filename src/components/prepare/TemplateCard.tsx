@@ -11,7 +11,10 @@ import { GroupPicker } from '@/components/prepare/GroupPicker'
 import { downloadWordDocument } from '@/lib/word'
 import { usePrepare } from '@/store/PrepareContext'
 import {
+  displayDateToIso,
   formatStartNum,
+  isoDateToDisplay,
+  normalizeTime,
   type DocumentTemplate,
   type StudentGroup,
 } from '@/types/prepare'
@@ -47,6 +50,68 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 outline-none focus:border-brand-400"
       />
+    </label>
+  )
+}
+
+function DateField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+}) {
+  const iso = displayDateToIso(value)
+
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium text-ink-500">
+        {label}
+      </span>
+      <input
+        type="date"
+        value={iso}
+        onChange={(e) => onChange(isoDateToDisplay(e.target.value))}
+        className="w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 outline-none focus:border-brand-400"
+      />
+      {value ? (
+        <span className="mt-1 block text-[11px] text-ink-400">{value}</span>
+      ) : (
+        <span className="mt-1 block text-[11px] text-ink-400">
+          Format: 24.08.2026
+        </span>
+      )}
+    </label>
+  )
+}
+
+function TimeField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium text-ink-500">
+        {label}
+      </span>
+      <input
+        type="time"
+        value={normalizeTime(value)}
+        onChange={(e) => onChange(normalizeTime(e.target.value))}
+        className="w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 outline-none focus:border-brand-400"
+      />
+      {value ? (
+        <span className="mt-1 block text-[11px] text-ink-400">{value}</span>
+      ) : (
+        <span className="mt-1 block text-[11px] text-ink-400">Format: 14:00</span>
+      )}
     </label>
   )
 }
@@ -134,11 +199,10 @@ export function TemplateCard({
             Butun Word uchun
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <Field
+            <DateField
               label="Sana (create_date)"
               value={template.shared.createDate}
               onChange={(v) => updateShared(template.id, { createDate: v })}
-              placeholder="22.04.2026"
             />
             <Field
               label="Kod (code)"
@@ -170,11 +234,10 @@ export function TemplateCard({
               onChange={(v) => updateShared(template.id, { duration: v })}
               placeholder="2026-yil 04-maydan 30-maygacha"
             />
-            <Field
+            <TimeField
               label="Vaqt (study_time)"
               value={template.shared.studyTime}
               onChange={(v) => updateShared(template.id, { studyTime: v })}
-              placeholder="15:30"
             />
             <Field
               label="Dekan (decan_name)"
