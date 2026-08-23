@@ -68,11 +68,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               >
                 <Icon size={18} strokeWidth={1.8} />
                 <span className="flex-1">{item.label}</span>
-                {item.badge ? (
-                  <span className="rounded-full bg-ink-700 px-2 py-0.5 text-[10px] font-semibold text-ink-300">
-                    {item.badge}
-                  </span>
-                ) : null}
               </NavLink>
             )
           })}
@@ -84,8 +79,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <span className="text-xs font-semibold">Mahalliy ishlov</span>
           </div>
           <p className="text-[12px] leading-relaxed text-ink-400">
-            Yuklangan Excel va Word fayllar faqat brauzer xotirasida saqlanadi.
-            Serverga yuborilmaydi.
+            Excel faqat brauzerda qoladi. Word namuna dasturga o‘rnatilgan.
           </p>
         </div>
       </aside>

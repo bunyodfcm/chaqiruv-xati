@@ -1,12 +1,16 @@
 import { useState } from 'react'
-import { Trash2 } from 'lucide-react'
+import { CheckCircle2, FileType, Trash2 } from 'lucide-react'
 import { FileDropzone } from '@/components/ui/FileDropzone'
 import { FileList } from '@/components/ui/FileList'
 import { PageHeader } from '@/components/ui/PageHeader'
+import {
+  BUILT_IN_TEMPLATE_NAME,
+  BUILT_IN_TEMPLATE_PATH,
+} from '@/lib/word'
 import { useFiles } from '@/store/FilesContext'
 import { EXCEL_EXTENSIONS } from '@/types/files'
 
-export function ExcelPage() {
+export function PreparePage() {
   const { excelFiles, addFiles, removeFile, clearCategory } = useFiles()
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -28,8 +32,8 @@ export function ExcelPage() {
   return (
     <div>
       <PageHeader
-        title="Excel ma'lumotlari"
-        description="Chaqiruv xatlari uchun asosiy jadvalni yuklang. Fayl o‘qilmaydi va serverga yuborilmaydi — keyingi taskda parse qilinadi."
+        title="Chaqiruv xati tayyorlash"
+        description="Excel jadvalini yuklang. Word namuna dasturga o‘rnatilgan — alohida yuklash shart emas."
         action={
           excelFiles.length > 0 ? (
             <button
@@ -43,6 +47,30 @@ export function ExcelPage() {
           ) : null
         }
       />
+
+      <div className="mb-6 flex items-start gap-3 rounded-2xl border border-ink-200 bg-white px-4 py-3.5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+          <FileType size={18} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-ink-900">Word namuna</p>
+          <p className="mt-0.5 truncate text-sm text-ink-500">
+            {BUILT_IN_TEMPLATE_NAME}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
+            <CheckCircle2 size={12} />
+            Tayyor
+          </span>
+          <a
+            href={BUILT_IN_TEMPLATE_PATH}
+            className="text-xs font-medium text-brand-600 hover:text-brand-700"
+          >
+            Ko‘rish
+          </a>
+        </div>
+      </div>
 
       <FileDropzone
         accept=".xlsx,.xls,.xlsm"

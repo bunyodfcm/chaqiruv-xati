@@ -1,10 +1,9 @@
 /**
- * Word shablon va hujjat generatsiyasi — keyingi task.
+ * Word shablon dasturga o'rnatilgan.
+ * Foydalanuvchi Word fayl yuklamaydi.
  *
- * Reja:
- * - docxtemplater / pizzip yoki shunga o'xshash browser-side yechim
- * - Excel qatorlari asosida .docx fayllar yaratish
- * - Natijani foydalanuvchi qurilmasiga yuklab olish
+ * Generatsiya — keyingi task (docxtemplater / pizzip, browser-side).
  */
 
-export {}
+export const BUILT_IN_TEMPLATE_PATH = '/chaqiruv-namuna.docx'
+export const BUILT_IN_TEMPLATE_NAME = 'chaqiruv-namuna.docx'
