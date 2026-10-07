@@ -28,7 +28,9 @@ export interface ParseExcelResult {
 /** Address presets for the form */
 export const ADDRESS_PRESETS = [
   'Xorazm viloyati, Urganch shahari, Islom Karimov ko‘chasi 110-uy',
+  'Urganch shahar Ashxabod MFY, Sanoatchilar ko‘chasi 9-uy',
   'Urganch shahar Ashxabod MFY, Sanoatchilar ko‘chasi 9-uy, 4-bino',
+  'Urganch shahar Ashxabod MFY, Sanoatchilar ko‘chasi 9-uy, 5-bino',
 ] as const
 
 export interface TemplateSharedFields {
