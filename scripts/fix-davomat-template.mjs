@@ -52,11 +52,6 @@ function fixParagraph(para) {
 xml = xml.replace(/<w:p[\s>][\s\S]*?<\/w:p>/g, fixParagraph)
 
 xml = xml.replace(
-  /Iqtisodiyot fakulteti\s*/g,
-  '{fakultet}',
-)
-
-xml = xml.replace(
   /o‘quv yili kuzgi semestrida uzrli sabablarsiz 30 soat/g,
   'o‘quv yili {semestr} semestrida uzrli sabablarsiz {ogohlantirish_soati} soat',
 )
@@ -99,21 +94,22 @@ function setRowCells(rowXml, values) {
   })
 }
 
-const loopRow = setRowCells(sampleDataRow, [
-  '{#talabalar}{index}',
-  '{student_name}',
-  '{hemis_id}',
-  '{group}',
-  '{kurs}',
-  '{soat}{/talabalar}',
-  '',
-])
-
-const tblStart = table.match(/^<w:tbl[\s>][\s\S]*?(?=<w:tr\b)/)?.[0]
-if (!tblStart) throw new Error('Could not parse table start')
-
-const rebuiltTable = `${tblStart}${headerRow}${loopRow}${totalRow}</w:tbl>`
-xml = xml.replace(table, rebuiltTable)
+let nextTable = table
+if (!sampleDataRow.includes('{#talabalar}')) {
+  const loopRow = setRowCells(sampleDataRow, [
+    '{#talabalar}{num}',
+    '{fullname}',
+    '{hemis_id}',
+    '{group}',
+    '{cours}',
+    '{hour}{/talabalar}',
+    '',
+  ])
+  const tblStart = table.match(/^<w:tbl[\s>][\s\S]*?(?=<w:tr\b)/)?.[0]
+  if (!tblStart) throw new Error('Could not parse table start')
+  nextTable = `${tblStart}${headerRow}${loopRow}${totalRow}</w:tbl>`
+}
+xml = xml.replace(table, nextTable)
 
 const bodyMatch = xml.match(/<w:body>([\s\S]*)<\/w:body>/)
 if (!bodyMatch) throw new Error('Body not found')
@@ -122,31 +118,45 @@ const bodyInner = bodyMatch[1]
 const lastSect = bodyInner.lastIndexOf('<w:sectPr')
 if (lastSect < 0) throw new Error('Body sectPr not found')
 const sectPr = bodyInner.slice(lastSect)
-const content = bodyInner.slice(0, lastSect)
+let content = bodyInner.slice(0, lastSect)
 
-const annexParaRe =
-  /<w:p[\s>][\s\S]*?\{bildirgi_chiqqan_sana\}[\s\S]*?<\/w:p>/
-const annexMatch = annexParaRe.exec(content)
-if (!annexMatch) throw new Error('Annex start paragraph not found')
+content = content.replace(
+  /<w:p\b[^>]*>(?:(?!<\/w:p>)[\s\S])*\{#ilovalar\}(?:(?!<\/w:p>)[\s\S])*<\/w:p>/g,
+  '',
+)
+content = content.replace(
+  /<w:p\b[^>]*>(?:(?!<\/w:p>)[\s\S])*\{\/ilovalar\}(?:(?!<\/w:p>)[\s\S])*<\/w:p>/g,
+  '',
+)
+content = content.replace(
+  /^\s*<w:p\b[^>]*>\s*(?:<w:pPr>[\s\S]*?<\/w:pPr>)?\s*<w:r>\s*<w:br w:type="page"\s*\/>\s*<\/w:r>\s*<\/w:p>/,
+  '',
+)
 
-const bildirgi = content.slice(0, annexMatch.index)
-const annex = content.slice(annexMatch.index)
-
-const ilovaHeadingRe =
-  /(<w:p[\s>][\s\S]*?bildirgisiga ilova[\s\S]*?<\/w:p>)/
-if (!ilovaHeadingRe.test(annex)) {
-  throw new Error('Ilova heading not found')
+function paragraphStartAt(xmlText, needle) {
+  const idx = xmlText.indexOf(needle)
+  if (idx < 0) return -1
+  let i = xmlText.lastIndexOf('<w:p', idx)
+  while (i >= 0) {
+    const ch = xmlText[i + 4]
+    if (ch === ' ' || ch === '>' || ch === '/') return i
+    i = xmlText.lastIndexOf('<w:p', i - 1)
+  }
+  return -1
 }
 
-const tutorPara = `<w:p><w:pPr><w:jc w:val="both"/></w:pPr><w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t xml:space="preserve">Tyutor: {tyutor_ismi}</w:t></w:r></w:p>`
-const annexWithTutor = annex.replace(ilovaHeadingRe, `$1${tutorPara}`)
+const annexIndex = paragraphStartAt(content, '{bildirgi_chiqqan_sana}')
+if (annexIndex < 0) throw new Error('Annex start paragraph not found')
+
+const bildirgi = content.slice(0, annexIndex)
+const annex = content.slice(annexIndex)
 
 const pageBreak = `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`
 const wrapped = [
   bildirgi,
   `<w:p><w:r><w:t>{#ilovalar}</w:t></w:r></w:p>`,
   pageBreak,
-  annexWithTutor,
+  annex,
   `<w:p><w:r><w:t>{/ilovalar}</w:t></w:r></w:p>`,
   sectPr,
 ].join('')
@@ -177,5 +187,5 @@ console.log(
 console.log('Has talabalar loop:', check.includes('{#talabalar}'))
 console.log('Has ilovalar loop:', check.includes('{#ilovalar}'))
 console.log('Has tyutor_ismi:', check.includes('{tyutor_ismi}'))
-console.log('Has fakultet:', check.includes('{fakultet}'))
+console.log('Has num/fullname/cours/hour:', ['{num}', '{fullname}', '{cours}', '{hour}'].every((t) => check.includes(t)))
 console.log('Done:', outDocx)

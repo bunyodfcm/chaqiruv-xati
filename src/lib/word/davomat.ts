@@ -18,12 +18,12 @@ import type {
 import { hourOptionByHours } from '@/types/davomat'
 
 export interface DavomatStudentPayload {
-  index: number
-  student_name: string
+  num: number
+  fullname: string
   hemis_id: string
   group: string
-  kurs: string
-  soat: number
+  cours: string
+  hour: number
 }
 
 export interface DavomatIlovaPayload {
@@ -66,12 +66,12 @@ export function buildIlovalar(
     jadvaldagi_talabalar_soni: group.students.length,
     jqs: group.students.reduce((sum, student) => sum + student.hours, 0),
     talabalar: group.students.map((student, index) => ({
-      index: index + 1,
-      student_name: student.studentName,
+      num: index + 1,
+      fullname: student.studentName,
       hemis_id: student.hemisId,
       group: student.group,
-      kurs: student.course,
-      soat: student.hours,
+      cours: student.course,
+      hour: student.hours,
     })),
   }))
 }
