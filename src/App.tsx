@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { DavomatPage } from '@/pages/DavomatPage'
 import { PreparePage } from '@/pages/PreparePage'
 import { FilesProvider } from '@/store/FilesContext'
 import { PrepareProvider } from '@/store/PrepareContext'
@@ -12,6 +13,7 @@ export default function App() {
           <Routes>
             <Route element={<AppLayout />}>
               <Route index element={<PreparePage />} />
+              <Route path="davomat" element={<DavomatPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>

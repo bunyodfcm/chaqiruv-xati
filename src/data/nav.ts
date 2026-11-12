@@ -1,4 +1,4 @@
-import { FileText, type LucideIcon } from 'lucide-react'
+import { ClipboardList, FileText, type LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   to: string
@@ -13,5 +13,11 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Chaqiruv xati tayyorlash',
     description: 'Excel yuklash va chaqiruv xati yaratish',
     icon: FileText,
+  },
+  {
+    to: '/davomat',
+    label: 'Davomat ogohlantirish tayyorlash',
+    description: 'Davomat ogohlantirishi bildirgisi yaratish',
+    icon: ClipboardList,
   },
 ]
